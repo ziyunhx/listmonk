@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"regexp"
@@ -25,10 +24,9 @@ import (
 const pwdMask = "•"
 
 type aboutHost struct {
-	OS        string `json:"os"`
-	OSRelease string `json:"os_release"`
-	Machine   string `json:"arch"`
-	Hostname  string `json:"hostname"`
+	OS       string `json:"os"`
+	Machine  string `json:"arch"`
+	Hostname string `json:"hostname"`
 }
 type aboutSystem struct {
 	NumCPU  int    `json:"num_cpu"`
@@ -295,18 +293,12 @@ func handleTestSMTPSettings(c echo.Context) error {
 }
 
 func handleGetAboutInfo(c echo.Context) error {
-	app := c.Get("app").(*App)
-
 	var (
-		mem     runtime.MemStats
-		utsname syscall.Utsname
+		app = c.Get("app").(*App)
+		mem runtime.MemStats
 	)
 
 	runtime.ReadMemStats(&mem)
-
-	if err := syscall.Uname(&utsname); err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Errorf("error getting system info: %v", err))
-	}
 
 	out := app.about
 	out.System.AllocMB = mem.Alloc / 1024 / 1024

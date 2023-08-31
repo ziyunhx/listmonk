@@ -466,7 +466,7 @@ WITH campLists AS (
     WHERE lists.id = ANY($14::INT[])
 ),
 tpl AS (
-    -- If there's no template_id given, use the defualt template.
+    -- If there's no template_id given, use the default template.
     SELECT (CASE WHEN $13 = 0 THEN id ELSE $13 END) AS id FROM templates WHERE is_default IS TRUE
 ),
 counts AS (
@@ -1082,4 +1082,4 @@ DELETE FROM bounces WHERE subscriber_id = (SELECT id FROM sub);
 
 -- name: get-db-info
 SELECT JSON_BUILD_OBJECT('version', (SELECT VERSION()),
-                        'size_mb', (SELECT ROUND(pg_database_size('listmonk')/(1024^2)))) AS info;
+                        'size_mb', (SELECT ROUND(pg_database_size((SELECT CURRENT_DATABASE()))/(1024^2)))) AS info;
