@@ -173,6 +173,30 @@
       </b-tab-item><!-- campaign -->
 
       <b-tab-item :label="$t('campaigns.content')" icon="text" :disabled="isNew" value="content">
+        <!-- Calendar Event -->
+        <div class="columns">
+          <div class="column is-4">
+            <b-field label="Send Calendar Event" data-cy="btn-send-later">
+                <b-switch v-model="form.sendEvent" :disabled="!canEdit" />
+            </b-field>
+          </div>
+          <div class="column">
+            <br />
+            <b-field v-if="form.sendEvent" data-cy="send_at"
+              :message="form.sendAtDate ? $utils.duration(Date(), form.sendAtDate) : ''">
+              <b-datetimepicker
+                v-model="form.sendAtDate"
+                :disabled="!canEdit"
+                :placeholder="$t('campaigns.dateAndTime')"
+                icon="calendar-clock"
+                :timepicker="{ hourFormat: '24' }"
+                :datetime-formatter="formatDateTime"
+                horizontal-time-picker>
+              </b-datetimepicker>
+            </b-field>
+          </div>
+        </div>
+
         <editor
           v-model="form.content"
           :id="data.id"
@@ -333,6 +357,7 @@ export default Vue.extend({
         // Parsed Date() version of send_at from the API.
         sendAtDate: null,
         sendLater: false,
+        sendEvent: false,
         archive: false,
         archiveMetaStr: '{}',
         archiveMeta: {},
