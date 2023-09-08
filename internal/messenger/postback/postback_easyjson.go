@@ -44,6 +44,8 @@ func easyjsonDf11841fDecodeGithubComKnadhListmonkInternalMessengerPostback(in *j
 			out.ContentType = string(in.String())
 		case "body":
 			out.Body = string(in.String())
+		case "alt_body":
+			out.AltBody = string(in.String())
 		case "recipients":
 			if in.IsNull() {
 				in.Skip()
@@ -128,6 +130,11 @@ func easyjsonDf11841fEncodeGithubComKnadhListmonkInternalMessengerPostback(out *
 		const prefix string = ",\"body\":"
 		out.RawString(prefix)
 		out.String(string(in.Body))
+	}
+	{
+		const prefix string = ",\"alt_body\":"
+		out.RawString(prefix)
+		out.String(string(in.AltBody))
 	}
 	{
 		const prefix string = ",\"recipients\":"

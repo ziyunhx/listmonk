@@ -27,13 +27,13 @@ module.exports = {
     port: process.env.LISTMONK_FRONTEND_PORT || 8080,
     proxy: {
       '^/$': {
-        target: process.env.LISTMONK_API_URL || 'https://mail-subscription.gimind.com'
+        target: process.env.LISTMONK_API_URL || 'http://127.0.0.1:9000'
       },
       '^/(api|webhooks|subscription|public|health)': {
-        target: process.env.LISTMONK_API_URL || 'https://mail-subscription.gimind.com'
+        target: process.env.LISTMONK_API_URL || 'http://127.0.0.1:9000'
       },
       '^/(admin\/custom\.(css|js))': {
-        target: process.env.LISTMONK_API_URL || 'https://mail-subscription.gimind.com'
+        target: process.env.LISTMONK_API_URL || 'http://127.0.0.1:9000'
       }
     }
   }
