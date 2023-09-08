@@ -20,6 +20,7 @@ type postback struct {
 	Subject     string       `json:"subject"`
 	ContentType string       `json:"content_type"`
 	Body        string       `json:"body"`
+	AltBody     string       `json:"alt_body"`
 	Recipients  []recipient  `json:"recipients"`
 	Campaign    *campaign    `json:"campaign"`
 	Attachments []attachment `json:"attachments"`
@@ -99,6 +100,7 @@ func (p *Postback) Push(m models.Message) error {
 		Subject:     m.Subject,
 		ContentType: m.ContentType,
 		Body:        string(m.Body),
+		AltBody:     string(m.AltBody),
 		Recipients: []recipient{{
 			UUID:    m.Subscriber.UUID,
 			Email:   m.Subscriber.Email,

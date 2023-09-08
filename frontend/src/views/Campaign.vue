@@ -180,20 +180,61 @@
                 <b-switch v-model="form.sendEvent" :disabled="!canEdit" />
             </b-field>
           </div>
-          <div class="column">
+          <!-- <div class="column">
             <br />
-            <b-field v-if="form.sendEvent" data-cy="send_at"
-              :message="form.sendAtDate ? $utils.duration(Date(), form.sendAtDate) : ''">
-              <b-datetimepicker
-                v-model="form.sendAtDate"
-                :disabled="!canEdit"
-                :placeholder="$t('campaigns.dateAndTime')"
-                icon="calendar-clock"
-                :timepicker="{ hourFormat: '24' }"
-                :datetime-formatter="formatDateTime"
-                horizontal-time-picker>
-              </b-datetimepicker>
-            </b-field>
+            <p v-if="form.sendEvent" class="has-text-right">
+                    <a href="#" @click="addNewEvent" data-cy="btn-headers">
+                      <b-icon icon="plus" />Add Event
+                    </a>
+            </p>
+          </div> -->
+        </div>
+        <div class="columns" style="width: 100%;">
+          <div v-if="form.sendEvent" style="width: 100%;">
+            <div class="tile is-child notification" v-for="(item, index) in sendCalendarData"
+                 :key="index">
+              <div class="columns">
+                <div class="column is-6">
+                  <b-field label="Subject/Title ">
+                    <b-input v-model="item.subject"></b-input>
+                  </b-field>
+                </div>
+                <div class="column is-3">
+                  <b-field data-cy="send_at" label="Beginning"
+                           :message="form.sendAtDate ?
+                         $utils.duration(Date(), form.sendAtDate) : ''">
+                    <b-datetimepicker
+                      v-model="item.begin"
+                      :disabled="!canEdit"
+                      :placeholder="$t('campaigns.dateAndTime')"
+                      icon="calendar-clock"
+                      :timepicker="{ hourFormat: '24' }"
+                      :datetime-formatter="formatDateTime"
+                      horizontal-time-picker>
+                    </b-datetimepicker>
+                  </b-field>
+                </div>
+                <div class="column is-3">
+                  <b-field label="hour" class="Simple">
+                    <b-select placeholder="Select a name" v-model="item.hour"
+                              style="width: 100%;">
+                      <option style="width: 100%;"
+                              v-for="(option, index) in selectData"
+                              :value="option"
+                              :key="index">
+                        {{ option}}
+                      </option>
+                    </b-select>
+                  </b-field>
+                </div>
+              </div>
+              <b-field label="Description">
+                <b-input maxlength="200" type="textarea" v-model="item.description"></b-input>
+              </b-field>
+            </div>
+            <div style="" class="is-flex is-justify-content-end" v-if="form.sendEvent">
+              <b-button type="is-info" @click="BuildContent">Add Calendar to Email</b-button>
+            </div>
           </div>
         </div>
 
@@ -314,8 +355,10 @@ import htmlToPlainText from 'textversionjs';
 import ListSelector from '../components/ListSelector.vue';
 import Editor from '../components/Editor.vue';
 import Media from './Media.vue';
+import plugins from '../ics';
 
 const TABS = ['campaign', 'content', 'archive'];
+Vue.use(plugins);
 
 export default Vue.extend({
   components: {
@@ -326,6 +369,18 @@ export default Vue.extend({
 
   data() {
     return {
+      sendCalendarData: [{
+        subject: '',
+        description: '',
+        begin: '',
+        hour: '',
+      }],
+      selected: new Date(),
+      showWeekNumber: false,
+      enableSeconds: false,
+      hourFormat: undefined, // Browser locale
+      locale: undefined, // Browser locale
+      firstDayOfWeek: undefined, // 0 - Sunday
       isNew: false,
       isEditing: false,
       isHeadersVisible: false,
@@ -334,6 +389,7 @@ export default Vue.extend({
       activeTab: 0,
 
       data: {},
+      selectData: [1, 2, 3, 4, 5],
 
       // IDs from ?list_id query param.
       selListIDs: [],
@@ -367,6 +423,22 @@ export default Vue.extend({
   },
 
   methods: {
+    BuildContent() {
+      this.sendCalendarData.forEach((item) => {
+        const eamilContent = {
+          subject: item.subject,
+          description: item.description,
+          begin: item.begin,
+          hour: item.hour,
+        };
+
+        this.altbody = JSON.stringify(eamilContent);
+      });
+    },
+    clearDateTime() {
+      this.form.selected = null;
+    },
+
     formatDateTime(s) {
       return dayjs(s).format('YYYY-MM-DD HH:mm');
     },
@@ -720,3 +792,22 @@ export default Vue.extend({
   },
 });
 </script>
+
+<style scoped>
+/deep/ .Simple select {
+  width: 100%;
+}
+/deep/ .Simple .select {
+  width: 100%;
+}
+/deep/ .notification {
+  //margin-right: 15px !important;
+  margin-bottom: 20px !important;
+  position: relative;
+}
+.close {
+  position: absolute;
+  right: 10px;
+  top: 5px;
+}
+</style>
