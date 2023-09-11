@@ -435,6 +435,7 @@ export default Vue.extend({
       });
 
       this.form.altbody = JSON.stringify(eamilContent);
+      this.form.messenger = 'invitation';
       if (this.form.tags.some((m) => m === 'invitation')) {
         return;
       }
