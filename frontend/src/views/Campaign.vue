@@ -350,7 +350,7 @@
 import Vue from 'vue';
 import { mapState } from 'vuex';
 import dayjs from 'dayjs';
-import htmlToPlainText from 'textversionjs';
+// import htmlToPlainText from 'textversionjs';
 
 import ListSelector from '../components/ListSelector.vue';
 import Editor from '../components/Editor.vue';
@@ -424,16 +424,22 @@ export default Vue.extend({
 
   methods: {
     BuildContent() {
+      let eamilContent = null;
       this.sendCalendarData.forEach((item) => {
-        const eamilContent = {
+        eamilContent = {
           subject: item.subject,
           description: item.description,
           begin: item.begin,
           hour: item.hour,
         };
-
-        this.altbody = JSON.stringify(eamilContent);
       });
+
+      this.form.altbody = JSON.stringify(eamilContent);
+      if (this.form.tags.some((m) => m === 'invitation')) {
+        return;
+      }
+
+      this.form.tags.push('invitation');
     },
     clearDateTime() {
       this.form.selected = null;
@@ -444,11 +450,11 @@ export default Vue.extend({
     },
 
     onAddAltBody() {
-      this.form.altbody = htmlToPlainText(this.form.content.body);
+      // this.form.altbody = htmlToPlainText(this.form.content.body);
     },
 
     onRemoveAltBody() {
-      this.form.altbody = null;
+      // this.form.altbody = null;
     },
 
     onShowHeaders() {
