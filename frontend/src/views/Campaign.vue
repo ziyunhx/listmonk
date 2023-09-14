@@ -229,7 +229,7 @@
                 </div>
               </div>
               <b-field label="Description">
-                <b-input maxlength="200" type="textarea" v-model="item.description"></b-input>
+                <b-input maxlength="800" type="textarea" v-model="item.description"></b-input>
               </b-field>
             </div>
             <div style="" class="is-flex is-justify-content-end" v-if="form.sendEvent">
@@ -389,7 +389,7 @@ export default Vue.extend({
       activeTab: 0,
 
       data: {},
-      selectData: [1, 2, 3, 4, 5],
+      selectData: [0.5, 1, 1.5, 2, 2.5, 3],
 
       // IDs from ?list_id query param.
       selListIDs: [],
